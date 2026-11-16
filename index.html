@@ -3,26 +3,79 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>STAT-DRIVE · ¿Cuánto tardo?</title>
 <style>
-:root{--tx:#1D1D1F;--ladrillo:#B5472B;--navy:#1B2A49;--gris:#F5F5F7;--mut:#6E6E73}
+:root{
+  --tx:#1D1D1F;
+  --ladrillo:#B5472B;
+  --navy:#1B2A49;
+  --gris:#F5F5F7;
+  --mut:#6E6E73;
+  --glass-bg:linear-gradient(145deg,rgba(255,255,255,.58),rgba(255,255,255,.34));
+  --glass-border:rgba(255,255,255,.85);
+  --glass-shadow:0 20px 44px rgba(29,29,31,.07),inset 0 1.5px 1px rgba(255,255,255,.95),inset 0 -1px 1px rgba(255,255,255,.35),inset 0 0 24px rgba(255,255,255,.28);
+  --seg-bg:rgba(29,29,31,.06);
+  --seg-active:rgba(255,255,255,.92);
+  --input-bg:rgba(255,255,255,.68);
+  --input-focus:rgba(255,255,255,.92);
+  --input-border:rgba(255,255,255,.85);
+  --btn-sec-bg:rgba(255,255,255,.68);
+  --btn-sec-hover:rgba(255,255,255,.88);
+  --warn-bg:rgba(181,71,43,.14);
+  --warn-tx:#8A3420;
+  --orb1:rgba(196,78,46,.32);
+  --orb2:rgba(235,128,82,.34);
+  --orb3:rgba(181,71,43,.24);
+  --orb1-m:rgba(196,78,46,.22);
+  --orb2-m:rgba(235,128,82,.24);
+  --orb3-m:rgba(181,71,43,.17);
+  color-scheme:light;
+}
+
+[data-theme="dark"]{
+  --tx:#F5F5F7;
+  --ladrillo:#EA6B48;
+  --navy:#253C6B;
+  --gris:#0A0A0E;
+  --mut:#98989F;
+  --glass-bg:linear-gradient(145deg,rgba(36,36,42,.62),rgba(22,22,26,.45));
+  --glass-border:rgba(255,255,255,.16);
+  --glass-shadow:0 24px 48px rgba(0,0,0,.45),inset 0 1px 1px rgba(255,255,255,.22),inset 0 -1px 1px rgba(255,255,255,.05),inset 0 0 24px rgba(255,255,255,.03);
+  --seg-bg:rgba(255,255,255,.08);
+  --seg-active:rgba(58,58,66,.92);
+  --input-bg:rgba(255,255,255,.07);
+  --input-focus:rgba(255,255,255,.12);
+  --input-border:rgba(255,255,255,.14);
+  --btn-sec-bg:rgba(255,255,255,.08);
+  --btn-sec-hover:rgba(255,255,255,.14);
+  --warn-bg:rgba(234,107,72,.18);
+  --warn-tx:#FF9A7D;
+  --orb1:rgba(214,82,45,.34);
+  --orb2:rgba(235,122,68,.28);
+  --orb3:rgba(175,62,34,.28);
+  --orb1-m:rgba(214,82,45,.28);
+  --orb2-m:rgba(235,122,68,.22);
+  --orb3-m:rgba(175,62,34,.22);
+  color-scheme:dark;
+}
+
 *{box-sizing:border-box}
 body{margin:0;min-height:100vh;color:var(--tx);background:var(--gris);
 font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display",system-ui,"Segoe UI",Roboto,sans-serif;
 -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
-padding:max(20px,env(safe-area-inset-top)) 16px max(24px,env(safe-area-inset-bottom));overflow-x:hidden}
+padding:max(20px,env(safe-area-inset-top)) 16px max(24px,env(safe-area-inset-bottom));overflow-x:hidden;
+transition:background-color .35s ease,color .35s ease}
 
-/* Fondo con orbes naranjas calibrados para laptop y móvil */
-.bg{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;background:var(--gris)}
-.orb{position:absolute;border-radius:50%;filter:blur(75px);will-change:transform}
-.orb-1{width:460px;height:460px;top:-110px;left:-90px;background:rgba(196,78,46,.32);animation:float1 16s ease-in-out infinite alternate}
-.orb-2{width:440px;height:440px;top:26%;right:-120px;background:rgba(235,128,82,.34);animation:float2 20s ease-in-out infinite alternate}
-.orb-3{width:500px;height:500px;bottom:-150px;left:10%;background:rgba(181,71,43,.24);animation:float3 18s ease-in-out infinite alternate}
+/* Fondo con orbes naranjas calibrados */
+.bg{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;background:var(--gris);transition:background-color .35s ease}
+.orb{position:absolute;border-radius:50%;filter:blur(75px);will-change:transform;transition:background .35s ease}
+.orb-1{width:460px;height:460px;top:-110px;left:-90px;background:var(--orb1);animation:float1 16s ease-in-out infinite alternate}
+.orb-2{width:440px;height:440px;top:26%;right:-120px;background:var(--orb2);animation:float2 20s ease-in-out infinite alternate}
+.orb-3{width:500px;height:500px;bottom:-150px;left:10%;background:var(--orb3);animation:float3 18s ease-in-out infinite alternate}
 
-/* Ajuste específico para pantallas de teléfono (evita saturación OLED y efecto beige) */
 @media(max-width:600px){
   .orb{filter:blur(60px)}
-  .orb-1{width:65vw;height:65vw;top:-8%;left:-18%;background:rgba(196,78,46,.22)}
-  .orb-2{width:62vw;height:62vw;top:32%;right:-22%;background:rgba(235,128,82,.24)}
-  .orb-3{width:70vw;height:70vw;bottom:-10%;left:-5%;background:rgba(181,71,43,.17)}
+  .orb-1{width:65vw;height:65vw;top:-8%;left:-18%;background:var(--orb1-m)}
+  .orb-2{width:62vw;height:62vw;top:32%;right:-22%;background:var(--orb2-m)}
+  .orb-3{width:70vw;height:70vw;bottom:-10%;left:-5%;background:var(--orb3-m)}
 }
 
 @keyframes float1{0%{transform:translate(0,0) scale(1)}100%{transform:translate(50px,70px) scale(1.12)}}
@@ -33,57 +86,76 @@ main{max-width:440px;margin:0 auto;display:grid;gap:16px}
 
 /* Tarjetas Liquid Glass */
 .glass{
-  background:linear-gradient(145deg,rgba(255,255,255,.58),rgba(255,255,255,.34));
+  background:var(--glass-bg);
   -webkit-backdrop-filter:blur(36px) saturate(185%);
   backdrop-filter:blur(36px) saturate(185%);
-  border:1px solid rgba(255,255,255,.85);
+  border:1px solid var(--glass-border);
   border-radius:30px;
-  box-shadow:
-    0 20px 44px rgba(29,29,31,.07),
-    inset 0 1.5px 1px rgba(255,255,255,.95),
-    inset 0 -1px 1px rgba(255,255,255,.35),
-    inset 0 0 24px rgba(255,255,255,.28);
+  box-shadow:var(--glass-shadow);
   padding:22px;
+  transition:background .35s ease,border-color .35s ease,box-shadow .35s ease;
 }
+
+/* Cabecera con etiqueta e interruptor */
+.top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.tag{display:inline-block;font-size:12px;font-weight:600;color:var(--ladrillo);background:rgba(181,71,43,.14);padding:4px 11px;border-radius:99px;border:1px solid rgba(181,71,43,.2)}
+
+/* Interruptor estilo iOS */
+.theme-switch{position:relative;display:inline-flex;align-items:center;width:54px;height:30px;border-radius:99px;background:var(--seg-bg);border:1px solid var(--input-border);padding:3px;cursor:pointer;transition:background .3s ease}
+.theme-switch input{display:none}
+.knob{width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.22);display:flex;align-items:center;justify-content:center;transition:transform .3s cubic-bezier(.34,1.56,.64,1),background .3s ease;color:#1D1D1F}
+.theme-switch input:checked + .knob{transform:translateX(24px);background:#2C2C34;color:#FFD60A}
+.knob svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
 h1{margin:0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",sans-serif;font-size:27px;font-weight:700;letter-spacing:-.025em}
 .sub{margin:4px 0 0;color:var(--mut);font-size:14px}
-.tag{display:inline-block;font-size:12px;font-weight:600;color:var(--ladrillo);background:rgba(181,71,43,.12);padding:4px 11px;border-radius:99px;margin-bottom:10px;border:1px solid rgba(181,71,43,.15)}
 label,.lb{display:block;font-size:13px;font-weight:600;color:var(--mut);margin:16px 0 6px}
 
 /* Selector segmentado estilo iOS */
-.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:rgba(29,29,31,.06);padding:4px;border-radius:16px;box-shadow:inset 0 1px 2px rgba(0,0,0,.04)}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:var(--seg-bg);padding:4px;border-radius:16px;box-shadow:inset 0 1px 2px rgba(0,0,0,.05)}
 .seg input{display:none}
 .seg label{margin:0;text-align:center;padding:10px 4px;border-radius:12px;font-size:13px;color:var(--tx);cursor:pointer;font-weight:500;transition:all .25s cubic-bezier(.25,.8,.25,1)}
-.seg input:checked+label{background:rgba(255,255,255,.92);box-shadow:0 3px 10px rgba(29,29,31,.12),0 1px 2px rgba(29,29,31,.06);color:var(--ladrillo);font-weight:600}
+.seg input:checked+label{background:var(--seg-active);box-shadow:0 3px 10px rgba(0,0,0,.14);color:var(--ladrillo);font-weight:600}
 
-input[type=time],input[type=number]{width:100%;padding:13px 14px;font-size:17px;color:var(--tx);background:rgba(255,255,255,.68);border:1px solid rgba(255,255,255,.85);border-radius:16px;outline:none;font-family:inherit;box-shadow:inset 0 1px 2px rgba(29,29,31,.04);transition:.2s}
-input:focus{background:rgba(255,255,255,.92);border-color:var(--ladrillo);box-shadow:0 0 0 3px rgba(181,71,43,.16)}
+input[type=time],input[type=number]{width:100%;padding:13px 14px;font-size:17px;color:var(--tx);background:var(--input-bg);border:1px solid var(--input-border);border-radius:16px;outline:none;font-family:inherit;box-shadow:inset 0 1px 2px rgba(0,0,0,.04);transition:.2s}
+input:focus{background:var(--input-focus);border-color:var(--ladrillo);box-shadow:0 0 0 3px rgba(234,107,72,.2)}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 
-button,.btn{display:block;width:100%;text-align:center;text-decoration:none;font:600 16px inherit;font-family:inherit;padding:14px;border-radius:18px;border:0;cursor:pointer;transition:transform .18s ease,box-shadow .18s ease}
-#go{margin-top:20px;background:linear-gradient(180deg,#23365C,#172440);color:#fff;box-shadow:0 8px 20px rgba(27,42,73,.28),inset 0 1px 0 rgba(255,255,255,.22)}
-#go:hover{box-shadow:0 10px 24px rgba(27,42,73,.34),inset 0 1px 0 rgba(255,255,255,.28)}
+button,.btn{display:block;width:100%;text-align:center;text-decoration:none;font:600 16px inherit;font-family:inherit;padding:14px;border-radius:18px;border:0;cursor:pointer;transition:transform .18s ease,box-shadow .18s ease,background .2s ease}
+#go{margin-top:20px;background:linear-gradient(180deg,#253B66,#172440);color:#fff;box-shadow:0 8px 20px rgba(20,32,58,.35),inset 0 1px 0 rgba(255,255,255,.22)}
+#go:hover{box-shadow:0 10px 24px rgba(20,32,58,.45),inset 0 1px 0 rgba(255,255,255,.28)}
 #go:active{transform:scale(.97)}
 
 #res{display:none;animation:in .4s cubic-bezier(.16,1,.3,1)}@keyframes in{from{opacity:0;transform:translateY(10px) scale(.98)}}
 .big{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",sans-serif;font-size:58px;font-weight:700;letter-spacing:-.035em;color:var(--ladrillo);line-height:1}
 .big small{font-size:20px;color:var(--mut);font-weight:600;margin-left:6px;letter-spacing:0}
 .rng{margin:6px 0 18px;color:var(--mut);font-size:14px}
-.bar{position:relative;height:12px;border-radius:99px;background:rgba(29,29,31,.08);box-shadow:inset 0 1px 2px rgba(0,0,0,.06)}
-.seg2{position:absolute;top:0;bottom:0;border-radius:99px;background:rgba(181,71,43,.35)}
+.bar{position:relative;height:12px;border-radius:99px;background:var(--seg-bg);box-shadow:inset 0 1px 2px rgba(0,0,0,.08)}
+.seg2{position:absolute;top:0;bottom:0;border-radius:99px;background:rgba(234,107,72,.38)}
 .dot{position:absolute;top:-4px;width:20px;height:20px;margin-left:-10px;border-radius:50%;background:var(--ladrillo);border:3px solid #fff;box-shadow:0 2px 8px rgba(181,71,43,.5)}
 .ends{display:flex;justify-content:space-between;font-size:12px;color:var(--mut);margin-top:8px}
-#w{display:none;margin-top:14px;padding:10px 12px;border-radius:14px;background:rgba(181,71,43,.14);color:#8A3420;font-size:13px;border:1px solid rgba(181,71,43,.2)}
+#w{display:none;margin-top:14px;padding:10px 12px;border-radius:14px;background:var(--warn-bg);color:var(--warn-tx);font-size:13px;border:1px solid rgba(234,107,72,.25)}
 .info{font-size:12.5px;color:var(--mut);line-height:1.5;margin:0}
-.btn{background:rgba(255,255,255,.68);color:var(--ladrillo);border:1px solid rgba(255,255,255,.85);box-shadow:0 4px 12px rgba(29,29,31,.04)}
-.btn:hover{background:rgba(255,255,255,.88)}
+.btn{background:var(--btn-sec-bg);color:var(--ladrillo);border:1px solid var(--input-border);box-shadow:0 4px 12px rgba(0,0,0,.04)}
+.btn:hover{background:var(--btn-sec-hover)}
 .btn:active{transform:scale(.98)}
 .foot{text-align:center;font-size:11.5px;color:var(--mut);padding:0 8px}
 
-@supports not (backdrop-filter:blur(1px)){.glass{background:rgba(255,255,255,.92)}}
+@supports not (backdrop-filter:blur(1px)){
+  .glass{background:rgba(255,255,255,.94)}
+  [data-theme="dark"] .glass{background:rgba(28,28,32,.95)}
+}
 @media(prefers-reduced-motion:reduce){.orb{animation:none!important}}
-</style></head><body>
+</style>
+<script>
+  // Aplica el tema guardado o el del sistema antes de pintar para evitar parpadeos
+  (function(){
+    const saved=localStorage.getItem("theme");
+    const dark=saved?saved==="dark":window.matchMedia("(prefers-color-scheme:dark)").matches;
+    if(dark)document.documentElement.setAttribute("data-theme","dark");
+  })();
+</script>
+</head><body>
 
 <div class="bg">
   <div class="orb orb-1"></div>
@@ -93,7 +165,15 @@ button,.btn{display:block;width:100%;text-align:center;text-decoration:none;font
 
 <main>
 <section class="glass">
-  <span class="tag">STAT-DRIVE · UCA</span>
+  <div class="top-bar">
+    <span class="tag">STAT-DRIVE · UCA</span>
+    <label class="theme-switch" aria-label="Cambiar modo oscuro">
+      <input type="checkbox" id="themeToggle">
+      <span class="knob" id="themeIcon">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32 1.41-1.41"/></svg>
+      </span>
+    </label>
+  </div>
   <h1>¿Cuánto tardo en llegar?</h1>
   <p class="sub">Estimación con tráfico real medido por estudiantes.</p>
   <div class="lb">Tipo de viaje</div>
@@ -127,6 +207,31 @@ button,.btn{display:block;width:100%;text-align:center;text-decoration:none;font
 
 <script>
 let M=null;const $=id=>document.getElementById(id);
+
+// Lógica del interruptor de tema
+const toggle=$("themeToggle"),icon=$("themeIcon");
+const SUN='<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32 1.41-1.41"/></svg>';
+const MOON='<svg viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>';
+
+function syncThemeUI(){
+  const isDark=document.documentElement.getAttribute("data-theme")==="dark";
+  toggle.checked=isDark;
+  icon.innerHTML=isDark?MOON:SUN;
+}
+syncThemeUI();
+
+toggle.addEventListener("change",()=>{
+  const isDark=toggle.checked;
+  if(isDark){
+    document.documentElement.setAttribute("data-theme","dark");
+    localStorage.setItem("theme","dark");
+  }else{
+    document.documentElement.removeAttribute("data-theme");
+    localStorage.setItem("theme","light");
+  }
+  icon.innerHTML=isDark?MOON:SUN;
+});
+
 fetch("model.json?"+Date.now()).then(r=>r.json()).then(m=>{M=m;info()}).catch(()=>$("s").textContent="No se pudo cargar el modelo.");
 function info(){$("s").textContent="Modelo entrenado con "+M.n+" viajes ("+M.n_form+" del formulario). Error medio en validación: "+M.mae_cv.toFixed(1)+" min. Actualizado: "+M.actualizado+"."}
 function calc(){
