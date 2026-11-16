@@ -3,38 +3,46 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>STAT-DRIVE · ¿Cuánto tardo?</title>
 <style>
-:root{--tx:#1D1D1F;--ladrillo:#B5472B;--navy:#1B2A49;--gris:#F2F2F5;--mut:#6E6E73}
+:root{--tx:#1D1D1F;--ladrillo:#B5472B;--navy:#1B2A49;--gris:#F5F5F7;--mut:#6E6E73}
 *{box-sizing:border-box}
 body{margin:0;min-height:100vh;color:var(--tx);background:var(--gris);
 font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display",system-ui,"Segoe UI",Roboto,sans-serif;
 -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
 padding:max(20px,env(safe-area-inset-top)) 16px max(24px,env(safe-area-inset-bottom));overflow-x:hidden}
 
-/* Fondo con orbes difuminados animados estilo Apple */
+/* Fondo con orbes naranjas calibrados para laptop y móvil */
 .bg{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;background:var(--gris)}
 .orb{position:absolute;border-radius:50%;filter:blur(75px);will-change:transform}
-.orb-1{width:460px;height:460px;top:-110px;left:-90px;background:rgba(181,71,43,.38);animation:float1 16s ease-in-out infinite alternate}
-.orb-2{width:440px;height:440px;top:24%;right:-120px;background:rgba(232,145,98,.42);animation:float2 20s ease-in-out infinite alternate}
-.orb-3{width:500px;height:500px;bottom:-150px;left:10%;background:rgba(195,88,52,.28);animation:float3 18s ease-in-out infinite alternate}
+.orb-1{width:460px;height:460px;top:-110px;left:-90px;background:rgba(196,78,46,.32);animation:float1 16s ease-in-out infinite alternate}
+.orb-2{width:440px;height:440px;top:26%;right:-120px;background:rgba(235,128,82,.34);animation:float2 20s ease-in-out infinite alternate}
+.orb-3{width:500px;height:500px;bottom:-150px;left:10%;background:rgba(181,71,43,.24);animation:float3 18s ease-in-out infinite alternate}
 
-@keyframes float1{0%{transform:translate(0,0) scale(1)}100%{transform:translate(70px,90px) scale(1.15)}}
-@keyframes float2{0%{transform:translate(0,0) scale(1)}100%{transform:translate(-80px,70px) scale(1.12)}}
-@keyframes float3{0%{transform:translate(0,0) scale(1)}100%{transform:translate(60px,-80px) scale(1.18)}}
+/* Ajuste específico para pantallas de teléfono (evita saturación OLED y efecto beige) */
+@media(max-width:600px){
+  .orb{filter:blur(60px)}
+  .orb-1{width:65vw;height:65vw;top:-8%;left:-18%;background:rgba(196,78,46,.22)}
+  .orb-2{width:62vw;height:62vw;top:32%;right:-22%;background:rgba(235,128,82,.24)}
+  .orb-3{width:70vw;height:70vw;bottom:-10%;left:-5%;background:rgba(181,71,43,.17)}
+}
+
+@keyframes float1{0%{transform:translate(0,0) scale(1)}100%{transform:translate(50px,70px) scale(1.12)}}
+@keyframes float2{0%{transform:translate(0,0) scale(1)}100%{transform:translate(-55px,55px) scale(1.1)}}
+@keyframes float3{0%{transform:translate(0,0) scale(1)}100%{transform:translate(45px,-60px) scale(1.14)}}
 
 main{max-width:440px;margin:0 auto;display:grid;gap:16px}
 
 /* Tarjetas Liquid Glass */
 .glass{
-  background:linear-gradient(145deg,rgba(255,255,255,.52),rgba(255,255,255,.28));
-  -webkit-backdrop-filter:blur(36px) saturate(190%);
-  backdrop-filter:blur(36px) saturate(190%);
-  border:1px solid rgba(255,255,255,.82);
+  background:linear-gradient(145deg,rgba(255,255,255,.58),rgba(255,255,255,.34));
+  -webkit-backdrop-filter:blur(36px) saturate(185%);
+  backdrop-filter:blur(36px) saturate(185%);
+  border:1px solid rgba(255,255,255,.85);
   border-radius:30px;
   box-shadow:
-    0 20px 44px rgba(29,29,31,.08),
+    0 20px 44px rgba(29,29,31,.07),
     inset 0 1.5px 1px rgba(255,255,255,.95),
     inset 0 -1px 1px rgba(255,255,255,.35),
-    inset 0 0 24px rgba(255,255,255,.25);
+    inset 0 0 24px rgba(255,255,255,.28);
   padding:22px;
 }
 
@@ -49,8 +57,8 @@ label,.lb{display:block;font-size:13px;font-weight:600;color:var(--mut);margin:1
 .seg label{margin:0;text-align:center;padding:10px 4px;border-radius:12px;font-size:13px;color:var(--tx);cursor:pointer;font-weight:500;transition:all .25s cubic-bezier(.25,.8,.25,1)}
 .seg input:checked+label{background:rgba(255,255,255,.92);box-shadow:0 3px 10px rgba(29,29,31,.12),0 1px 2px rgba(29,29,31,.06);color:var(--ladrillo);font-weight:600}
 
-input[type=time],input[type=number]{width:100%;padding:13px 14px;font-size:17px;color:var(--tx);background:rgba(255,255,255,.65);border:1px solid rgba(255,255,255,.8);border-radius:16px;outline:none;font-family:inherit;box-shadow:inset 0 1px 2px rgba(29,29,31,.04);transition:.2s}
-input:focus{background:rgba(255,255,255,.88);border-color:var(--ladrillo);box-shadow:0 0 0 3px rgba(181,71,43,.16)}
+input[type=time],input[type=number]{width:100%;padding:13px 14px;font-size:17px;color:var(--tx);background:rgba(255,255,255,.68);border:1px solid rgba(255,255,255,.85);border-radius:16px;outline:none;font-family:inherit;box-shadow:inset 0 1px 2px rgba(29,29,31,.04);transition:.2s}
+input:focus{background:rgba(255,255,255,.92);border-color:var(--ladrillo);box-shadow:0 0 0 3px rgba(181,71,43,.16)}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 
 button,.btn{display:block;width:100%;text-align:center;text-decoration:none;font:600 16px inherit;font-family:inherit;padding:14px;border-radius:18px;border:0;cursor:pointer;transition:transform .18s ease,box-shadow .18s ease}
@@ -68,8 +76,8 @@ button,.btn{display:block;width:100%;text-align:center;text-decoration:none;font
 .ends{display:flex;justify-content:space-between;font-size:12px;color:var(--mut);margin-top:8px}
 #w{display:none;margin-top:14px;padding:10px 12px;border-radius:14px;background:rgba(181,71,43,.14);color:#8A3420;font-size:13px;border:1px solid rgba(181,71,43,.2)}
 .info{font-size:12.5px;color:var(--mut);line-height:1.5;margin:0}
-.btn{background:rgba(255,255,255,.65);color:var(--ladrillo);border:1px solid rgba(255,255,255,.85);box-shadow:0 4px 12px rgba(29,29,31,.04)}
-.btn:hover{background:rgba(255,255,255,.85)}
+.btn{background:rgba(255,255,255,.68);color:var(--ladrillo);border:1px solid rgba(255,255,255,.85);box-shadow:0 4px 12px rgba(29,29,31,.04)}
+.btn:hover{background:rgba(255,255,255,.88)}
 .btn:active{transform:scale(.98)}
 .foot{text-align:center;font-size:11.5px;color:var(--mut);padding:0 8px}
 
