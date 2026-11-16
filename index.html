@@ -1,34 +1,83 @@
 <!DOCTYPE html>
 <html lang="es"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>STAT-DRIVE: ¿cuánto tardo?</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>STAT-DRIVE · ¿Cuánto tardo?</title>
 <style>
-body{font-family:system-ui,sans-serif;max-width:420px;margin:24px auto;padding:0 16px;color:#1a1a1a}
-label{display:block;margin-top:12px;font-size:14px}input,select,button{width:100%;padding:10px;font-size:16px;box-sizing:border-box}
-button{margin-top:16px;background:#1f5aa6;color:#fff;border:0;border-radius:8px}
-#r{margin-top:20px;padding:14px;border-radius:8px;background:#eef3fb;display:none}#w{color:#b45309;font-size:14px}
-small{color:#555}
-</style></head><body>
-<h2>¿Cuánto tardo en llegar?</h2>
-<label>Tipo de viaje<select id="t"><option value="ida">Casa → UCA</option><option value="regreso">UCA → Casa</option><option value="otra">Otra actividad</option></select></label>
-<label>Hora de salida<input id="h" type="time" value="06:00"></label>
-<label>Distancia (km)<input id="d" type="number" step="0.1" value="10"></label>
-<label>Incidencias en la ruta (0 si no hay)<input id="i" type="number" min="0" value="0"></label>
-<button onclick="calc()">Calcular</button>
-<div id="r"><b id="p"></b><div id="w"></div><small id="s"></small></div>
-<p><small>Registra tu viaje real para que el modelo mejore: <a id="f" href="PEGA_AQUI_EL_LINK_DEL_FORM">abrir formulario</a></small></p>
+:root{--tx:#1D1D1F;--ladrillo:#B5472B;--navy:#1B2A49;--gris:#F2F2F4;--mut:#6E6E73}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
+background:radial-gradient(520px 420px at 12% 8%,rgba(181,71,43,.28),transparent 70%),radial-gradient(480px 400px at 92% 30%,rgba(224,140,100,.30),transparent 70%),radial-gradient(520px 460px at 30% 100%,rgba(181,71,43,.16),transparent 70%),var(--gris);background-attachment:fixed;padding:max(20px,env(safe-area-inset-top)) 16px max(24px,env(safe-area-inset-bottom))}
+main{max-width:440px;margin:0 auto;display:grid;gap:14px}
+.glass{background:rgba(255,255,255,.58);-webkit-backdrop-filter:blur(24px) saturate(170%);backdrop-filter:blur(24px) saturate(170%);border:1px solid rgba(255,255,255,.75);border-radius:28px;box-shadow:0 10px 34px rgba(29,29,31,.09),inset 0 1px 0 rgba(255,255,255,.9);padding:20px}
+h1{margin:0;font-size:26px;letter-spacing:-.02em}.sub{margin:4px 0 0;color:var(--mut);font-size:14px}
+.tag{display:inline-block;font-size:12px;font-weight:600;color:var(--ladrillo);background:rgba(181,71,43,.1);padding:4px 10px;border-radius:99px;margin-bottom:10px}
+label,.lb{display:block;font-size:13px;font-weight:600;color:var(--mut);margin:16px 0 6px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:rgba(29,29,31,.06);padding:4px;border-radius:16px}
+.seg input{display:none}.seg label{margin:0;text-align:center;padding:10px 4px;border-radius:12px;font-size:13px;color:var(--tx);cursor:pointer;font-weight:500}
+.seg input:checked+label{background:#fff;box-shadow:0 2px 8px rgba(29,29,31,.12);color:var(--ladrillo);font-weight:700}
+input[type=time],input[type=number]{width:100%;padding:13px 14px;font-size:17px;color:var(--tx);background:rgba(255,255,255,.75);border:1px solid rgba(29,29,31,.1);border-radius:16px;outline:none;font-family:inherit}
+input:focus{border-color:var(--ladrillo);box-shadow:0 0 0 3px rgba(181,71,43,.15)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+button,.btn{display:block;width:100%;text-align:center;text-decoration:none;font:600 16px inherit;font-family:inherit;padding:14px;border-radius:16px;border:0;cursor:pointer}
+#go{margin-top:20px;background:var(--navy);color:#fff;box-shadow:0 6px 16px rgba(27,42,73,.25)}
+#go:active{transform:scale(.98)}
+#res{display:none;animation:in .35s ease}@keyframes in{from{opacity:0;transform:translateY(8px)}}
+.big{font-size:56px;font-weight:700;letter-spacing:-.03em;color:var(--ladrillo);line-height:1}.big small{font-size:20px;color:var(--mut);font-weight:600;margin-left:6px}
+.rng{margin:6px 0 18px;color:var(--mut);font-size:14px}
+.bar{position:relative;height:12px;border-radius:99px;background:rgba(29,29,31,.08)}
+.seg2{position:absolute;top:0;bottom:0;border-radius:99px;background:rgba(181,71,43,.35)}
+.dot{position:absolute;top:-4px;width:20px;height:20px;margin-left:-10px;border-radius:50%;background:var(--ladrillo);border:3px solid #fff;box-shadow:0 2px 8px rgba(181,71,43,.5)}
+.ends{display:flex;justify-content:space-between;font-size:12px;color:var(--mut);margin-top:8px}
+#w{display:none;margin-top:14px;padding:10px 12px;border-radius:14px;background:rgba(181,71,43,.12);color:#8A3420;font-size:13px}
+.info{font-size:12.5px;color:var(--mut);line-height:1.5;margin:0}
+.btn{background:rgba(255,255,255,.7);color:var(--ladrillo);border:1px solid rgba(181,71,43,.25)}
+.foot{text-align:center;font-size:11.5px;color:var(--mut);padding:0 8px}
+@supports not (backdrop-filter:blur(1px)){.glass{background:rgba(255,255,255,.92)}}
+</style></head><body><main>
+<section class="glass">
+  <span class="tag">STAT-DRIVE · UCA</span>
+  <h1>¿Cuánto tardo en llegar?</h1>
+  <p class="sub">Estimación con tráfico real medido por estudiantes.</p>
+  <div class="lb">Tipo de viaje</div>
+  <div class="seg">
+    <input type="radio" name="t" id="t1" value="ida" checked><label for="t1">Casa → UCA</label>
+    <input type="radio" name="t" id="t2" value="regreso"><label for="t2">UCA → Casa</label>
+    <input type="radio" name="t" id="t3" value="otra"><label for="t3">Otro</label>
+  </div>
+  <label for="h">Hora de salida</label><input id="h" type="time" value="06:00">
+  <div class="row">
+    <div><label for="d">Distancia (km)</label><input id="d" type="number" step="0.1" min="0.5" value="10"></div>
+    <div><label for="i">Incidencias</label><input id="i" type="number" min="0" max="10" value="0"></div>
+  </div>
+  <button id="go" onclick="calc()">Calcular</button>
+</section>
+<section class="glass" id="res">
+  <div class="big"><span id="p">0</span><small>min</small></div>
+  <div class="rng" id="rg"></div>
+  <div class="bar"><div class="seg2" id="sg"></div><div class="dot" id="dt"></div></div>
+  <div class="ends"><span>0</span><span id="mx"></span></div>
+  <div id="w"></div>
+</section>
+<section class="glass">
+  <p class="info" id="s">Cargando modelo…</p>
+  <a class="btn" id="f" href="https://forms.gle/Pd8U3SRPJoDpBC5h9" style="margin-top:14px">Registrar mi viaje real</a>
+</section>
+<p class="foot">Proyecto de Probabilidad y Estadística · Datos anónimos · Código desarrollado con apoyo de IA y revisado por el equipo</p>
+</main>
 <script>
-let M=null;
-fetch("model.json?"+Date.now()).then(r=>r.json()).then(m=>M=m).catch(()=>document.getElementById("s").textContent="No se pudo cargar el modelo.");
+let M=null;const $=id=>document.getElementById(id);
+fetch("model.json?"+Date.now()).then(r=>r.json()).then(m=>{M=m;info()}).catch(()=>$("s").textContent="No se pudo cargar el modelo.");
+function info(){$("s").textContent="Modelo entrenado con "+M.n+" viajes ("+M.n_form+" del formulario). Error medio en validación: "+M.mae_cv.toFixed(1)+" min. Actualizado: "+M.actualizado+"."}
 function calc(){
   if(!M)return;
-  const [hh,mm]=document.getElementById("h").value.split(":").map(Number), h=hh+mm/60;
-  const d=+document.getElementById("d").value, i=+document.getElementById("i").value, t=document.getElementById("t").value;
+  const [hh,mm]=$("h").value.split(":").map(Number),h=hh+mm/60,d=+$("d").value,i=+$("i").value,t=document.querySelector('input[name=t]:checked').value;
   const y=M.intercepto+M.distancia_km*d+M.hora_salida*h+M.incidencias_n*i+(t==="regreso"?M.es_regreso:0)+(t==="otra"?M.es_otra:0);
-  const e=1.645*M.rmse_cv, lo=Math.max(1,Math.round(y-e)), hi=Math.round(y+e);
-  document.getElementById("r").style.display="block";
-  document.getElementById("p").textContent="≈ "+Math.round(Math.max(1,y))+" min (rango aprox. "+lo+"–"+hi+" min)";
-  document.getElementById("w").textContent=(d<M.dist_min||d>M.dist_max)?"⚠ Esa distancia está fuera de lo que el modelo ha visto ("+M.dist_min+"–"+M.dist_max+" km); la predicción es poco confiable.":"";
-  document.getElementById("s").textContent="Modelo entrenado con "+M.n+" viajes ("+M.n_form+" del formulario). Error medio en validación: "+M.mae_cv.toFixed(1)+" min. Actualizado: "+M.actualizado;
+  const e=1.645*M.rmse_cv,p=Math.max(1,y),lo=Math.max(1,y-e),hi=y+e,top=Math.max(hi,p)*1.15;
+  $("res").style.display="block";$("p").textContent=Math.round(p);
+  $("rg").textContent="Rango aproximado: "+Math.round(lo)+" a "+Math.round(hi)+" min (≈90 %)";
+  $("sg").style.left=(lo/top*100)+"%";$("sg").style.width=((hi-lo)/top*100)+"%";$("dt").style.left=(p/top*100)+"%";$("mx").textContent=Math.round(top)+" min";
+  const w=$("w");
+  if(d<M.dist_min||d>M.dist_max){w.style.display="block";w.textContent="Esa distancia está fuera de lo que el modelo ha visto ("+M.dist_min+" a "+M.dist_max+" km). La predicción es poco confiable."}else w.style.display="none";
+  $("res").scrollIntoView({behavior:"smooth",block:"nearest"});
 }
 </script></body></html>
