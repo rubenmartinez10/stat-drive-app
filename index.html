@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>STAT-DRIVE: ¿cuánto tardo?</title>
+<style>
+body{font-family:system-ui,sans-serif;max-width:420px;margin:24px auto;padding:0 16px;color:#1a1a1a}
+label{display:block;margin-top:12px;font-size:14px}input,select,button{width:100%;padding:10px;font-size:16px;box-sizing:border-box}
+button{margin-top:16px;background:#1f5aa6;color:#fff;border:0;border-radius:8px}
+#r{margin-top:20px;padding:14px;border-radius:8px;background:#eef3fb;display:none}#w{color:#b45309;font-size:14px}
+small{color:#555}
+</style></head><body>
+<h2>¿Cuánto tardo en llegar?</h2>
+<label>Tipo de viaje<select id="t"><option value="ida">Casa → UCA</option><option value="regreso">UCA → Casa</option><option value="otra">Otra actividad</option></select></label>
+<label>Hora de salida<input id="h" type="time" value="06:00"></label>
+<label>Distancia (km)<input id="d" type="number" step="0.1" value="10"></label>
+<label>Incidencias en la ruta (0 si no hay)<input id="i" type="number" min="0" value="0"></label>
+<button onclick="calc()">Calcular</button>
+<div id="r"><b id="p"></b><div id="w"></div><small id="s"></small></div>
+<p><small>Registra tu viaje real para que el modelo mejore: <a id="f" href="PEGA_AQUI_EL_LINK_DEL_FORM">abrir formulario</a></small></p>
+<script>
+let M=null;
+fetch("model.json?"+Date.now()).then(r=>r.json()).then(m=>M=m).catch(()=>document.getElementById("s").textContent="No se pudo cargar el modelo.");
+function calc(){
+  if(!M)return;
+  const [hh,mm]=document.getElementById("h").value.split(":").map(Number), h=hh+mm/60;
+  const d=+document.getElementById("d").value, i=+document.getElementById("i").value, t=document.getElementById("t").value;
+  const y=M.intercepto+M.distancia_km*d+M.hora_salida*h+M.incidencias_n*i+(t==="regreso"?M.es_regreso:0)+(t==="otra"?M.es_otra:0);
+  const e=1.645*M.rmse_cv, lo=Math.max(1,Math.round(y-e)), hi=Math.round(y+e);
+  document.getElementById("r").style.display="block";
+  document.getElementById("p").textContent="≈ "+Math.round(Math.max(1,y))+" min (rango aprox. "+lo+"–"+hi+" min)";
+  document.getElementById("w").textContent=(d<M.dist_min||d>M.dist_max)?"⚠ Esa distancia está fuera de lo que el modelo ha visto ("+M.dist_min+"–"+M.dist_max+" km); la predicción es poco confiable.":"";
+  document.getElementById("s").textContent="Modelo entrenado con "+M.n+" viajes ("+M.n_form+" del formulario). Error medio en validación: "+M.mae_cv.toFixed(1)+" min. Actualizado: "+M.actualizado;
+}
+</script></body></html>

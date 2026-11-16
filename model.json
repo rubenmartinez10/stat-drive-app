@@ -1,0 +1,15 @@
+{
+  "intercepto": 45.0224,
+  "distancia_km": 1.989,
+  "hora_salida": -2.0062,
+  "incidencias_n": 5.5146,
+  "es_regreso": 31.1887,
+  "es_otra": -10.0553,
+  "rmse_cv": 28.1498,
+  "mae_cv": 23.2722,
+  "n": 137,
+  "n_form": 0,
+  "dist_min": 2.0,
+  "dist_max": 120.0,
+  "actualizado": "2026-11-16 04:03 UTC"
+}
