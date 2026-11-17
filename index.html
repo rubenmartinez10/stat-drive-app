@@ -116,7 +116,7 @@ button,.btn{display:block;width:100%;text-align:center;text-decoration:none;font
   <button id="go" onclick="calc()">Calcular</button>
 </section>
 <section class="glass" id="res">
-  <div class="big"><span id="p">0</span><small>min</small></div>
+  <div class="big"><span id="p">0</span><small id="pu">min</small></div>
   <div class="rng" id="rg"></div>
   <div class="bar"><div class="seg2" id="sg"></div><div class="dot" id="dt"></div></div>
   <div class="ends"><span>0</span><span id="mx"></span></div>
@@ -141,6 +141,8 @@ toggle.addEventListener("change",()=>{const d=toggle.checked;
   icon.innerHTML=d?MOON:SUN});
 fetch("model.json?"+Date.now()).then(r=>r.json()).then(m=>{M=m;info()}).catch(()=>$("s").textContent="No se pudo cargar el modelo.");
 function info(){$("s").textContent="Modelo entrenado con "+M.n+" viajes ("+M.n_form+" del formulario). Error medio en validación: "+M.mae_cv.toFixed(1)+" min. Actualizado: "+M.actualizado+"."}
+function fmt(m){m=Math.round(m);if(m<60)return m+" min";const h=Math.floor(m/60),r=m%60;return h+" h"+(r?" "+r+" min":"")}
+function setBig(m){m=Math.round(m);if(m<60){$("p").textContent=m;$("pu").textContent="min"}else{const h=Math.floor(m/60),r=m%60;$("p").textContent=h+" h"+(r?" "+r:"");$("pu").textContent=r?"min":""}}
 function calc(){
   if(!M)return;
   const [hh,mm]=$("h").value.split(":").map(Number),h=hh+mm/60,d=+$("d").value,t=document.querySelector('input[name=t]:checked').value;
@@ -148,9 +150,9 @@ function calc(){
   const cn=(M.nivel_trafico!==undefined?M.nivel_trafico:M.incidencias_n)||0;
   const y=M.intercepto+M.distancia_km*d+M.hora_salida*h+cn*n+(M.es_bus||0)*bus+(t==="regreso"?M.es_regreso:0)+(t==="otra"?M.es_otra:0);
   const e=1.645*M.rmse_cv,p=Math.max(1,y),lo=Math.max(1,y-e),hi=y+e,top=Math.max(hi,p)*1.15;
-  $("res").style.display="block";$("p").textContent=Math.round(p);
-  $("rg").textContent="Rango aproximado: "+Math.round(lo)+" a "+Math.round(hi)+" min (≈90 %)";
-  $("sg").style.left=(lo/top*100)+"%";$("sg").style.width=((hi-lo)/top*100)+"%";$("dt").style.left=(p/top*100)+"%";$("mx").textContent=Math.round(top)+" min";
+  $("res").style.display="block";setBig(p);
+  $("rg").textContent="Rango aproximado: "+fmt(lo)+" a "+fmt(hi)+" (≈90 %)";
+  $("sg").style.left=(lo/top*100)+"%";$("sg").style.width=((hi-lo)/top*100)+"%";$("dt").style.left=(p/top*100)+"%";$("mx").textContent=fmt(top);
   const w=$("w");
   if(d<M.dist_min||d>M.dist_max){w.style.display="block";w.textContent="Esa distancia está fuera de lo que el modelo ha visto ("+M.dist_min+" a "+M.dist_max+" km). La predicción es poco confiable."}else w.style.display="none";
   $("res").scrollIntoView({behavior:"smooth",block:"nearest"});
