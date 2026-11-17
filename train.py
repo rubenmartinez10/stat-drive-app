@@ -69,6 +69,7 @@ for k in range(10):
 
 modelo = {"intercepto": coef[0], **dict(zip(COLS, coef[1:])),
           "rmse_cv": float(np.sqrt((errs ** 2).mean())), "mae_cv": float(np.abs(errs).mean()),
+          "e50": float(np.percentile(np.abs(errs), 50)), "e90": float(np.percentile(np.abs(errs), 90)),
           "n": len(df), "n_form": n_form,
           "dist_min": float(df["distancia_km"].min()), "dist_max": float(df["distancia_km"].max()),
           "actualizado": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")}
