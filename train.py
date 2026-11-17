@@ -37,7 +37,7 @@ def cargar():
     f = f[NEEDED].copy()
     f["hora_salida"] = f["hora_salida"].map(hora_decimal)
     for c in ["distancia_km", "real_min"]:
-        f[c] = pd.to_numeric(f[c], errors="coerce")
+        f[c] = pd.to_numeric(f[c].astype(str).str.replace(",", ".", regex=False), errors="coerce")
     f["tipo"] = f["tipo"].astype(str).str.strip().str.lower()
     f["transporte"] = f["transporte"].astype(str).str.strip().str.lower().map(
         lambda s: "bus" if "bus" in s else ("carro" if "carro" in s else np.nan))
