@@ -1,16 +1,16 @@
 {
-  "intercepto": 17.1195,
-  "distancia_km": 1.7734,
-  "hora_salida": -0.1941,
-  "nivel_trafico": 6.7089,
-  "es_regreso": 13.6841,
-  "es_otra": -34.8709,
-  "es_bus": 43.1487,
-  "rmse_cv": 19.2406,
-  "mae_cv": 15.7222,
-  "n": 137,
-  "n_form": 0,
+  "intercepto": 17.111,
+  "distancia_km": 1.7585,
+  "hora_salida": -0.2203,
+  "nivel_trafico": 8.2532,
+  "es_regreso": 14.0714,
+  "es_otra": -35.0349,
+  "es_bus": 43.9108,
+  "rmse_cv": 19.2806,
+  "mae_cv": 15.6208,
+  "n": 139,
+  "n_form": 2,
   "dist_min": 2.0,
   "dist_max": 120.0,
-  "actualizado": "2026-11-17 01:32 UTC"
+  "actualizado": "2026-11-17 01:44 UTC"
 }
