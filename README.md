@@ -113,3 +113,7 @@ El desarrollo de la aplicación y del código de entrenamiento se realizó por e
 ## Autoría y contribuciones
 
 Proyecto desarrollado por el equipo. La implementación de la aplicación y del código de entrenamiento estuvo a cargo de Rubén Eliseo Martínez Pérez, con participación de los demás integrantes en las diferentes etapas del proyecto.
+
+## Licencia
+
+Este proyecto se distribuye bajo la Licencia MIT. Consulte el archivo [`LICENSE`](LICENSE) para conocer los términos completos de uso, modificación y distribución del código.
