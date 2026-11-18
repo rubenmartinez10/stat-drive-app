@@ -87,7 +87,7 @@ button,.btn{display:block;width:100%;text-align:center;text-decoration:none;font
 .phs{margin:8px 0 0;color:var(--mut);font-size:14px}
 #res.has .ph{display:none}#res:not(.has) .out{display:none}
 h2{margin:0 0 12px;font-size:15px;font-weight:600}
-#svg{width:100%;height:auto;display:block}
+#svg{width:100%;height:auto;display:block;margin-top:6px}
 .lg{display:flex;gap:16px;font-size:12px;color:var(--mut);margin-top:10px}.lg span{display:flex;align-items:center;gap:6px}
 .lg i{width:10px;height:10px;border-radius:50%;display:inline-block}.lg i.me{background:var(--ladrillo);box-shadow:0 0 0 2px #fff}
 @media(min-width:960px){
@@ -144,9 +144,10 @@ h2{margin:0 0 12px;font-size:15px;font-weight:600}
   </div>
 </section>
 <section class="glass" id="sc">
-  <h2>Tu viaje frente a los viajes reales</h2>
-  <svg id="svg" viewBox="0 0 420 240" role="img" aria-label="Gráfica de distancia contra tiempo de los viajes registrados"></svg>
-  <div class="lg"><span><i style="background:var(--ladrillo)"></i>Bus</span><span><i style="background:var(--mut)"></i>Carro</span><span><i class="me"></i>Tu viaje</span></div>
+  <h2>Comparado con viajes reales parecidos</h2>
+  <p class="phs" id="scm">Calcula tu viaje para compararlo con los registrados.</p>
+  <svg id="svg" viewBox="0 0 420 112" role="img" aria-label="Línea de tiempo de viajes parecidos y tu estimación" style="display:none"></svg>
+  <div class="lg" id="lgd" style="display:none"><span><i style="background:var(--mut)"></i>Viajes reales parecidos</span><span><i class="me"></i>Tu estimación y su rango</span></div>
 </section>
 <section class="glass">
   <p class="info" id="s">Cargando modelo…</p>
@@ -168,16 +169,20 @@ toggle.addEventListener("change",()=>{const d=toggle.checked;
 fetch("model.json?"+Date.now()).then(r=>r.json()).then(m=>{M=m;info()}).catch(()=>$("s").textContent="No se pudo cargar el modelo.");
 function info(){$("s").textContent="Modelo entrenado con "+M.n+" viajes ("+M.n_form+" del formulario). Error medio en validación: "+M.mae_cv.toFixed(1)+" min. Actualizado: "+M.actualizado+"."}
 let PTS=[];
-const SX=d=>40+Math.min(d,125)/125*370,SY=m=>205-Math.min(m,260)/260*190;
 fetch("viajes_base.csv").then(r=>r.text()).then(t=>{const L=t.trim().split(/\r?\n/),H=L[0].split(","),a=H.indexOf("distancia_km"),b=H.indexOf("real_min"),c=H.indexOf("transporte");
-  PTS=L.slice(1).map(l=>l.split(",")).map(x=>({d:+x[a],y:+x[b],b:x[c]==="bus"}));drawScatter()}).catch(()=>{});
-function drawScatter(){let g="";
-  [0,60,120,180,240].forEach(m=>g+='<line x1="40" x2="410" y1="'+SY(m)+'" y2="'+SY(m)+'" style="stroke:var(--seg-bg)"/><text x="34" y="'+(SY(m)+4)+'" text-anchor="end" font-size="10" style="fill:var(--mut)">'+(m?m/60+" h":"0")+'</text>');
-  [0,40,80,120].forEach(k=>g+='<text x="'+SX(k)+'" y="224" text-anchor="middle" font-size="10" style="fill:var(--mut)">'+k+' km</text>');
-  PTS.forEach(p=>g+='<circle cx="'+SX(p.d).toFixed(1)+'" cy="'+SY(p.y).toFixed(1)+'" r="3.4" style="fill:'+(p.b?"var(--ladrillo)":"var(--mut)")+'" fill-opacity=".55"/>');
-  $("svg").innerHTML=g+'<g id="me"></g>'}
-function drawMe(d,p,lo,hi,lo5,hi5){const g=$("me");if(!g)return;const x=SX(d);
-  g.innerHTML='<line x1="'+x+'" x2="'+x+'" y1="'+SY(lo)+'" y2="'+SY(hi)+'" stroke-width="8" stroke-linecap="round" style="stroke:var(--ladrillo)" stroke-opacity=".28"/><line x1="'+x+'" x2="'+x+'" y1="'+SY(lo5)+'" y2="'+SY(hi5)+'" stroke-width="8" stroke-linecap="round" style="stroke:var(--ladrillo)" stroke-opacity=".7"/><circle cx="'+x+'" cy="'+SY(p)+'" r="7" stroke="#fff" stroke-width="2.5" style="fill:var(--ladrillo)"/>'}
+  PTS=L.slice(1).map(l=>l.split(",")).map(x=>({d:+x[a],y:+x[b],b:x[c]==="bus"}))}).catch(()=>{});
+function cmp(d,bus,p,lo5,hi5){
+  const tol=Math.max(2,d*.25),S=PTS.filter(q=>q.b===!!bus&&Math.abs(q.d-d)<=tol).map(q=>q.y).sort((x,y)=>x-y),svg=$("svg"),lg=$("lgd"),m=$("scm");
+  m.style.display="block";
+  if(S.length<3){svg.style.display=lg.style.display="none";m.textContent="Hay muy pocos viajes registrados de unos "+Math.round(d)+" km en "+(bus?"bus":"carro")+" ("+S.length+"), así que todavía no hay con qué comparar. Cada viaje nuevo del formulario ayuda a llenar este vacío.";return}
+  const mx=Math.max(S[S.length-1],hi5)*1.08,X=v=>(20+v/mx*380).toFixed(1),st=[15,30,60,120].find(s=>mx/s<=6)||180,k=S.length,md=k%2?S[(k-1)/2]:(S[k/2-1]+S[k/2])/2;
+  let g='<rect x="'+X(lo5)+'" y="30" width="'+(X(hi5)-X(lo5))+'" height="46" rx="14" style="fill:var(--ladrillo)" fill-opacity=".16"/><line x1="20" x2="400" y1="90" y2="90" stroke-width="2" style="stroke:var(--seg-bg)"/>';
+  for(let v=0;v<=mx;v+=st)g+='<text x="'+X(v)+'" y="106" text-anchor="'+(v?"middle":"start")+'" font-size="10" style="fill:var(--mut)">'+(v?fmt(v):"0")+'</text>';
+  S.forEach((y,i)=>g+='<circle cx="'+X(y)+'" cy="'+(53+((i*7)%5-2)*6)+'" r="4.5" style="fill:var(--mut)" fill-opacity=".65"/>');
+  const x=+X(p);g+='<line x1="'+x+'" x2="'+x+'" y1="26" y2="86" stroke-width="3" stroke-linecap="round" style="stroke:var(--ladrillo)"/><text x="'+x+'" y="16" text-anchor="'+(x<70?"start":x>350?"end":"middle")+'" font-size="11" font-weight="600" style="fill:var(--ladrillo)">Tu estimación</text>';
+  svg.innerHTML=g;svg.style.display="block";lg.style.display="flex";
+  m.textContent=k+" viajes parecidos · mediana "+fmt(md)+" · de "+fmt(S[0])+" a "+fmt(S[k-1]);
+}
 function fmt(m){m=Math.round(m);if(m<60)return m+" min";const h=Math.floor(m/60),r=m%60;return h+" h"+(r?" "+r+" min":"")}
 function setBig(m){m=Math.round(m);if(m<60){$("p").textContent=m;$("pu").textContent="min"}else{const h=Math.floor(m/60),r=m%60;$("p").textContent=h+" h"+(r?" "+r:"");$("pu").textContent=r?"min":""}}
 function calc(){
@@ -189,7 +194,7 @@ function calc(){
   const e90=M.e90||1.645*M.rmse_cv,e50=M.e50||0.674*M.rmse_cv,p=Math.max(1,y),lo=Math.max(1,y-e90),hi=y+e90,lo5=Math.max(1,y-e50),hi5=y+e50,top=Math.max(hi,p)*1.15;
   $("res").classList.add("has");setBig(p);
   $("rg").innerHTML="<b>Lo más probable:</b> "+fmt(lo5)+" a "+fmt(hi5)+"<br><small>Casi seguro (≈90 %): "+fmt(lo)+" a "+fmt(hi)+"</small>";
-  $("sg").style.left=(lo/top*100)+"%";$("sg").style.width=((hi-lo)/top*100)+"%";$("sg3").style.left=(lo5/top*100)+"%";$("sg3").style.width=((hi5-lo5)/top*100)+"%";$("dt").style.left=(p/top*100)+"%";$("mx").textContent=fmt(top);drawMe(d,p,lo,hi,lo5,hi5);
+  $("sg").style.left=(lo/top*100)+"%";$("sg").style.width=((hi-lo)/top*100)+"%";$("sg3").style.left=(lo5/top*100)+"%";$("sg3").style.width=((hi5-lo5)/top*100)+"%";$("dt").style.left=(p/top*100)+"%";$("mx").textContent=fmt(top);cmp(d,bus,p,lo5,hi5);
   const w=$("w");
   if(d<M.dist_min||d>M.dist_max){w.style.display="block";w.textContent="Esa distancia está fuera de lo que el modelo ha visto ("+M.dist_min+" a "+M.dist_max+" km). La predicción es poco confiable."}else w.style.display="none";
   $("res").scrollIntoView({behavior:"smooth",block:"nearest"});
