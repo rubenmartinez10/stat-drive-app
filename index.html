@@ -2,6 +2,8 @@
 <html lang="es"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>STAT-DRIVE · ¿Cuánto tardo?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --tx:#1D1D1F;--ladrillo:#B5472B;--navy:#1B2A49;--gris:#F5F5F7;--mut:#6E6E73;
@@ -27,7 +29,7 @@
 }
 *{box-sizing:border-box}
 body{margin:0;min-height:100vh;color:var(--tx);background:var(--gris);
-font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display",system-ui,"Segoe UI",Roboto,sans-serif;
+font-family:Inter,-apple-system,BlinkMacSystemFont,system-ui,"Segoe UI",Roboto,sans-serif;font-feature-settings:"cv11","ss01";
 -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
 padding:max(20px,env(safe-area-inset-top)) 16px max(24px,env(safe-area-inset-bottom));overflow-x:hidden;transition:background-color .35s ease,color .35s ease}
 .bg{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;background:var(--gris);transition:background-color .35s ease}
@@ -49,14 +51,14 @@ main{max-width:440px;margin:0 auto;display:grid;gap:16px}
 .knob{width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.22);display:flex;align-items:center;justify-content:center;transition:transform .3s cubic-bezier(.34,1.56,.64,1),background .3s ease;color:#1D1D1F}
 .theme-switch input:checked + .knob{transform:translateX(24px);background:#2C2C34;color:#FFD60A}
 .knob svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-h1{margin:0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",sans-serif;font-size:27px;font-weight:700;letter-spacing:-.025em}
+h1{margin:0;font-size:28px;font-weight:700;letter-spacing:-.015em}
 .sub{margin:4px 0 0;color:var(--mut);font-size:14px}
 label,.lb{display:block;font-size:13px;font-weight:600;color:var(--mut);margin:16px 0 6px}
 .seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:var(--seg-bg);padding:4px;border-radius:16px;box-shadow:inset 0 1px 2px rgba(0,0,0,.05)}
 .cols2{grid-template-columns:repeat(2,1fr)}
 .seg input{display:none}
 .seg label{margin:0;text-align:center;padding:10px 4px;border-radius:12px;font-size:13px;color:var(--tx);cursor:pointer;font-weight:500;transition:all .25s cubic-bezier(.25,.8,.25,1)}
-.seg input:checked+label{background:var(--seg-active);box-shadow:0 3px 10px rgba(0,0,0,.14);color:var(--ladrillo);font-weight:600}
+.seg input:checked+label{background:var(--seg-active);box-shadow:0 3px 10px rgba(0,0,0,.14),inset 0 0 0 1px rgba(234,107,72,.4);color:var(--ladrillo);font-weight:600}
 .hint{font-size:12px;color:var(--mut);margin:8px 2px 0}
 input[type=time],input[type=number]{width:100%;padding:13px 14px;font-size:17px;color:var(--tx);background:var(--input-bg);border:1px solid var(--input-border);border-radius:16px;outline:none;font-family:inherit;box-shadow:inset 0 1px 2px rgba(0,0,0,.04);transition:.2s}
 input:focus{background:var(--input-focus);border-color:var(--ladrillo);box-shadow:0 0 0 3px rgba(234,107,72,.2)}
@@ -65,7 +67,7 @@ button,.btn{display:block;width:100%;text-align:center;text-decoration:none;font
 #go:hover{box-shadow:0 10px 24px rgba(20,32,58,.45),inset 0 1px 0 rgba(255,255,255,.28)}
 #go:active{transform:scale(.97)}
 #res{display:none;animation:in .4s cubic-bezier(.16,1,.3,1)}@keyframes in{from{opacity:0;transform:translateY(10px) scale(.98)}}
-.big{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",sans-serif;font-size:58px;font-weight:700;letter-spacing:-.035em;color:var(--ladrillo);line-height:1}
+.big{font-size:58px;font-weight:700;letter-spacing:-.035em;color:var(--ladrillo);line-height:1}
 .big small{font-size:20px;color:var(--mut);font-weight:600;margin-left:6px;letter-spacing:0}
 .rng{margin:6px 0 18px;color:var(--mut);font-size:14px}
 .bar{position:relative;height:12px;border-radius:99px;background:var(--seg-bg);box-shadow:inset 0 1px 2px rgba(0,0,0,.08)}
@@ -79,6 +81,20 @@ button,.btn{display:block;width:100%;text-align:center;text-decoration:none;font
 .btn{background:var(--btn-sec-bg);color:var(--ladrillo);border:1px solid var(--input-border);box-shadow:0 4px 12px rgba(0,0,0,.04)}
 .btn:hover{background:var(--btn-sec-hover)}.btn:active{transform:scale(.98)}
 .foot{text-align:center;font-size:11.5px;color:var(--mut);padding:0 8px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+#res.has{display:block}
+.ph{text-align:center;padding:14px 0}.phb{margin:0;font-size:58px;font-weight:700;letter-spacing:-.03em;color:var(--seg-bg);-webkit-text-stroke:0}
+.phs{margin:8px 0 0;color:var(--mut);font-size:14px}
+#res.has .ph{display:none}#res:not(.has) .out{display:none}
+h2{margin:0 0 12px;font-size:15px;font-weight:600}
+#svg{width:100%;height:auto;display:block}
+.lg{display:flex;gap:16px;font-size:12px;color:var(--mut);margin-top:10px}.lg span{display:flex;align-items:center;gap:6px}
+.lg i{width:10px;height:10px;border-radius:50%;display:inline-block}.lg i.me{background:var(--ladrillo);box-shadow:0 0 0 2px #fff}
+@media(min-width:960px){
+  main{max-width:1060px;grid-template-columns:minmax(380px,430px) 1fr;align-items:start;gap:20px;margin-top:2vh}
+  #form{grid-row:1 / span 3;position:sticky;top:20px}#res{display:block}.foot{grid-column:1 / -1}
+  .big{font-size:84px}.phb{font-size:84px}
+}
 @supports not (backdrop-filter:blur(1px)){.glass{background:rgba(255,255,255,.94)}[data-theme="dark"] .glass{background:rgba(28,28,32,.95)}}
 @media(prefers-reduced-motion:reduce){.orb{animation:none!important}}
 </style>
@@ -88,7 +104,7 @@ button,.btn{display:block;width:100%;text-align:center;text-decoration:none;font
 </head><body>
 <div class="bg"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
 <main>
-<section class="glass">
+<section class="glass" id="form">
   <div class="top-bar">
     <span class="tag">STAT-DRIVE · UCA</span>
     <label class="theme-switch" aria-label="Cambiar modo oscuro"><input type="checkbox" id="themeToggle"><span class="knob" id="themeIcon"></span></label>
@@ -106,8 +122,8 @@ button,.btn{display:block;width:100%;text-align:center;text-decoration:none;font
     <input type="radio" name="m" id="m1" value="carro" checked><label for="m1">Carro</label>
     <input type="radio" name="m" id="m2" value="bus"><label for="m2">Bus</label>
   </div>
-  <label for="h">Hora de salida</label><input id="h" type="time" value="06:00">
-  <label for="d">Distancia (km)</label><input id="d" type="number" step="0.1" min="0.5" value="10">
+  <div class="row2"><div><label for="h">Hora de salida</label><input id="h" type="time" value="06:00"></div>
+  <div><label for="d">Distancia (km)</label><input id="d" type="number" step="0.1" min="0.5" value="10"></div></div>
   <div class="lb">Tráfico al salir</div>
   <div class="seg">
     <input type="radio" name="n" id="n0" value="0" checked><label for="n0">Leve</label>
@@ -118,11 +134,19 @@ button,.btn{display:block;width:100%;text-align:center;text-decoration:none;font
   <button id="go" onclick="calc()">Calcular</button>
 </section>
 <section class="glass" id="res">
+  <div class="ph"><p class="phb">— min</p><p class="phs">Completa los datos y pulsa Calcular para ver tu estimación.</p></div>
+  <div class="out">
   <div class="big"><span id="p">0</span><small id="pu">min</small></div>
   <div class="rng" id="rg"></div>
   <div class="bar"><div class="seg2" id="sg"></div><div class="seg3" id="sg3"></div><div class="dot" id="dt"></div></div>
   <div class="ends"><span>0</span><span id="mx"></span></div>
   <div id="w"></div>
+  </div>
+</section>
+<section class="glass" id="sc">
+  <h2>Tu viaje frente a los viajes reales</h2>
+  <svg id="svg" viewBox="0 0 420 240" role="img" aria-label="Gráfica de distancia contra tiempo de los viajes registrados"></svg>
+  <div class="lg"><span><i style="background:var(--ladrillo)"></i>Bus</span><span><i style="background:var(--mut)"></i>Carro</span><span><i class="me"></i>Tu viaje</span></div>
 </section>
 <section class="glass">
   <p class="info" id="s">Cargando modelo…</p>
@@ -143,6 +167,17 @@ toggle.addEventListener("change",()=>{const d=toggle.checked;
   icon.innerHTML=d?MOON:SUN});
 fetch("model.json?"+Date.now()).then(r=>r.json()).then(m=>{M=m;info()}).catch(()=>$("s").textContent="No se pudo cargar el modelo.");
 function info(){$("s").textContent="Modelo entrenado con "+M.n+" viajes ("+M.n_form+" del formulario). Error medio en validación: "+M.mae_cv.toFixed(1)+" min. Actualizado: "+M.actualizado+"."}
+let PTS=[];
+const SX=d=>40+Math.min(d,125)/125*370,SY=m=>205-Math.min(m,260)/260*190;
+fetch("viajes_base.csv").then(r=>r.text()).then(t=>{const L=t.trim().split(/\r?\n/),H=L[0].split(","),a=H.indexOf("distancia_km"),b=H.indexOf("real_min"),c=H.indexOf("transporte");
+  PTS=L.slice(1).map(l=>l.split(",")).map(x=>({d:+x[a],y:+x[b],b:x[c]==="bus"}));drawScatter()}).catch(()=>{});
+function drawScatter(){let g="";
+  [0,60,120,180,240].forEach(m=>g+='<line x1="40" x2="410" y1="'+SY(m)+'" y2="'+SY(m)+'" style="stroke:var(--seg-bg)"/><text x="34" y="'+(SY(m)+4)+'" text-anchor="end" font-size="10" style="fill:var(--mut)">'+(m?m/60+" h":"0")+'</text>');
+  [0,40,80,120].forEach(k=>g+='<text x="'+SX(k)+'" y="224" text-anchor="middle" font-size="10" style="fill:var(--mut)">'+k+' km</text>');
+  PTS.forEach(p=>g+='<circle cx="'+SX(p.d).toFixed(1)+'" cy="'+SY(p.y).toFixed(1)+'" r="3.4" style="fill:'+(p.b?"var(--ladrillo)":"var(--mut)")+'" fill-opacity=".55"/>');
+  $("svg").innerHTML=g+'<g id="me"></g>'}
+function drawMe(d,p,lo,hi,lo5,hi5){const g=$("me");if(!g)return;const x=SX(d);
+  g.innerHTML='<line x1="'+x+'" x2="'+x+'" y1="'+SY(lo)+'" y2="'+SY(hi)+'" stroke-width="8" stroke-linecap="round" style="stroke:var(--ladrillo)" stroke-opacity=".28"/><line x1="'+x+'" x2="'+x+'" y1="'+SY(lo5)+'" y2="'+SY(hi5)+'" stroke-width="8" stroke-linecap="round" style="stroke:var(--ladrillo)" stroke-opacity=".7"/><circle cx="'+x+'" cy="'+SY(p)+'" r="7" stroke="#fff" stroke-width="2.5" style="fill:var(--ladrillo)"/>'}
 function fmt(m){m=Math.round(m);if(m<60)return m+" min";const h=Math.floor(m/60),r=m%60;return h+" h"+(r?" "+r+" min":"")}
 function setBig(m){m=Math.round(m);if(m<60){$("p").textContent=m;$("pu").textContent="min"}else{const h=Math.floor(m/60),r=m%60;$("p").textContent=h+" h"+(r?" "+r:"");$("pu").textContent=r?"min":""}}
 function calc(){
@@ -152,9 +187,9 @@ function calc(){
   const cn=(M.nivel_trafico!==undefined?M.nivel_trafico:M.incidencias_n)||0;
   const y=M.intercepto+M.distancia_km*d+M.hora_salida*h+cn*n+(M.es_bus||0)*bus+(t==="regreso"?M.es_regreso:0)+(t==="otra"?M.es_otra:0);
   const e90=M.e90||1.645*M.rmse_cv,e50=M.e50||0.674*M.rmse_cv,p=Math.max(1,y),lo=Math.max(1,y-e90),hi=y+e90,lo5=Math.max(1,y-e50),hi5=y+e50,top=Math.max(hi,p)*1.15;
-  $("res").style.display="block";setBig(p);
+  $("res").classList.add("has");setBig(p);
   $("rg").innerHTML="<b>Lo más probable:</b> "+fmt(lo5)+" a "+fmt(hi5)+"<br><small>Casi seguro (≈90 %): "+fmt(lo)+" a "+fmt(hi)+"</small>";
-  $("sg").style.left=(lo/top*100)+"%";$("sg").style.width=((hi-lo)/top*100)+"%";$("sg3").style.left=(lo5/top*100)+"%";$("sg3").style.width=((hi5-lo5)/top*100)+"%";$("dt").style.left=(p/top*100)+"%";$("mx").textContent=fmt(top);
+  $("sg").style.left=(lo/top*100)+"%";$("sg").style.width=((hi-lo)/top*100)+"%";$("sg3").style.left=(lo5/top*100)+"%";$("sg3").style.width=((hi5-lo5)/top*100)+"%";$("dt").style.left=(p/top*100)+"%";$("mx").textContent=fmt(top);drawMe(d,p,lo,hi,lo5,hi5);
   const w=$("w");
   if(d<M.dist_min||d>M.dist_max){w.style.display="block";w.textContent="Esa distancia está fuera de lo que el modelo ha visto ("+M.dist_min+" a "+M.dist_max+" km). La predicción es poco confiable."}else w.style.display="none";
   $("res").scrollIntoView({behavior:"smooth",block:"nearest"});
